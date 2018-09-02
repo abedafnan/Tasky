@@ -9,5 +9,5 @@
         android:title="@string/action_delete"
         android:icon="@drawable/ic_delete_white_24dp"
         app:showAsAction="always" />
-    
+
 </menu>
