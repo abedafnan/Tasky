@@ -13,12 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-    private LinearLayout dialogLayout;
-    private EditText taskInput;
-    private EditText priorityInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +66,15 @@ public class MainActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(70, 30, 70, 0);
+        layoutParams.setMargins(60, 30, 60, 0);
 
         // Adding and Styling the task input field
-        taskInput = new EditText(this);
+        EditText taskInput = new EditText(this);
         taskInput.setInputType(InputType.TYPE_CLASS_TEXT);
         taskInput.setHint("Enter new task");
 
         // Adding and Styling the priority input field
-        priorityInput = new EditText(this);
+        EditText priorityInput = new EditText(this);
         priorityInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         priorityInput.setHint("Enter task priority");
 
@@ -107,6 +104,47 @@ public class MainActivity extends AppCompatActivity {
     public void viewDeleteDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Delete Task");
+        dialog.setCancelable(true);
+
+        // Adding and styling the layout of the dialog
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(60, 30, 60, 0);
+
+        // Adding and Styling the to-be-deleted task input field
+        final EditText editText = new EditText(this);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setHint("Enter task number");
+
+        layout.addView(editText, layoutParams);
+        dialog.setView(layout);
+
+        // Set up the buttons
+        dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (editText.getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "task number not entered!", Toast.LENGTH_SHORT).show();
+                } else {
+                    confirmDeletion();
+                }
+            }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.create().show();
+    }
+
+    public void confirmDeletion() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setMessage("Delete this task ?");
         dialog.setCancelable(true);
 
         // Set up the buttons
