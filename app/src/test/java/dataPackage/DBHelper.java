@@ -18,20 +18,20 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    private final String CREATE_TASKS_TABLE = "CREATE TABLE " + TaskEntry.TABLE_NAME + " ("
+            + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + TaskEntry.NAME_COLUMN + " TEXT NOT NULL, "
+            + TaskEntry.PRIORITY_COLUMN + " INTEGER NOT NULL DEFAULT 1, "
+            + TaskEntry.TIME_COLUMN + " TEXT NOT NULL);";
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TASKS_TABLE = "CREATE TABLE " + TaskEntry.TABLE_NAME + " ("
-                + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + TaskEntry.NAME_COLUMN + " TEXT NOT NULL, "
-                + TaskEntry.PRIORITY_COLUMN + " INTEGER NOT NULL DEFAULT 1, "
-                + TaskEntry.TIME_COLUMN + " TEXT NOT NULL);";
-
         sqLiteDatabase.execSQL(CREATE_TASKS_TABLE);
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("DROP TABLE " + TaskEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL(CREATE_TASKS_TABLE);
     }
 }

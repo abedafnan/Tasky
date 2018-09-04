@@ -44,7 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.taskName.setText(mTasks.get(position).getTaskName());
-        holder.taskPriority.setText(mTasks.get(position).getTaskPriority());
+        holder.taskPriority.setText("" + mTasks.get(position).getTaskPriority());
     }
 
     @Override

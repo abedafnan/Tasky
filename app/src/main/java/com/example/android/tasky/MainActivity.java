@@ -6,8 +6,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +18,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+    ArrayList<Task> mTasks;
+    RecyclerAdapter mAdapter;
+    RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,23 @@ public class MainActivity extends AppCompatActivity {
                 viewAddDialog();
             }
         });
+
+        mRecyclerView = findViewById(R.id.recycler_view);
+
+        mTasks = new ArrayList<>();
+        mTasks.add(new Task("Task 1", 1));
+        mTasks.add(new Task("Task 2", 2));
+        mTasks.add(new Task("Task 3", 3));
+        mTasks.add(new Task("Task 4", 4));
+        mTasks.add(new Task("Task 5", 5));
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new RecyclerAdapter(mTasks);
+        mRecyclerView.setAdapter(mAdapter);
+
+//        mRecyclerView.addOnItemTouchListener();
     }
 
     @Override

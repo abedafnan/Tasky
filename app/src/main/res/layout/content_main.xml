@@ -9,7 +9,9 @@
     tools:showIn="@layout/activity_main"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="@dimen/activity_padding" >
+    android:paddingLeft="@dimen/vertical_margin"
+    android:paddingRight="@dimen/vertical_margin"
+    android:paddingTop="@dimen/horizontal_margin">
 
     <TextView
         android:id="@+id/title"
