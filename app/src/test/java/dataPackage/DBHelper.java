@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TaskEntry.NAME_COLUMN + " TEXT NOT NULL, "
                 + TaskEntry.PRIORITY_COLUMN + " INTEGER NOT NULL DEFAULT 1, "
-                + TaskEntry.TIME_COLUMN + " INTEGER NOT NULL);";
+                + TaskEntry.TIME_COLUMN + " TEXT NOT NULL);";
 
         sqLiteDatabase.execSQL(CREATE_TASKS_TABLE);
 
