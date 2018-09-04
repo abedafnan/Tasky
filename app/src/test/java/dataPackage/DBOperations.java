@@ -23,9 +23,9 @@ public class DBOperations {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("name" , task.getTaskName());
-        values.put("priority", task.getTaskPriority());
-        values.put("time", task.getTaskTime());
+        values.put(TaskEntry.NAME_COLUMN, task.getTaskName());
+        values.put(TaskEntry.PRIORITY_COLUMN, task.getTaskPriority());
+        values.put(TaskEntry.TIME_COLUMN, task.getTaskTime());
 
         return database.insert(TaskEntry.TABLE_NAME, null, values);
     }
@@ -34,8 +34,22 @@ public class DBOperations {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         String whereClause = TaskEntry.PRIORITY_COLUMN + " = ?";
-        String[] args = new String[]{String.valueOf(taskNumber)};
+        String[] whereArgs = new String[]{String.valueOf(taskNumber)};
 
-        return database.delete(TaskEntry.TABLE_NAME, whereClause, args);
+        return database.delete(TaskEntry.TABLE_NAME, whereClause, whereArgs);
+    }
+
+    public int updateTask(Task oldTask, Task newTask) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TaskEntry.NAME_COLUMN, newTask.getTaskName());
+        values.put(TaskEntry.PRIORITY_COLUMN, newTask.getTaskPriority());
+        values.put(TaskEntry.TIME_COLUMN, newTask.getTaskTime());
+
+        String whereClause = TaskEntry.PRIORITY_COLUMN + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(oldTask.getTaskPriority())};
+
+        return database.update(TaskEntry.TABLE_NAME, values, whereClause, whereArgs);
     }
 }
