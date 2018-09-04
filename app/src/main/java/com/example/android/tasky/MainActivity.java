@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         if (id == R.id.action_delete) {
             viewDeleteDialog();
             return true;
@@ -88,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                addTask();
             }
         });
+
         dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -151,9 +152,10 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                deleteTask();
             }
         });
+
         dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -162,5 +164,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.create().show();
+    }
+
+    public void addTask(){
+
+    }
+
+    public void deleteTask(){
+
     }
 }
