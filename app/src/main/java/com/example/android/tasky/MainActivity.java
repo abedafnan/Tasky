@@ -52,10 +52,13 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new RecyclerAdapter(mTasks);
+        mAdapter = new RecyclerAdapter(mTasks, new RecyclerAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                viewUpdateDialog();
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
-
-//        mRecyclerView.addOnItemTouchListener();
     }
 
     @Override
