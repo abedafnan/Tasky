@@ -43,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_view);
 
         mTasks = new ArrayList<>();
-        mTasks.add(new Task("Task 1", 1));
-        mTasks.add(new Task("Task 2", 2));
-        mTasks.add(new Task("Task 3", 3));
-        mTasks.add(new Task("Task 4", 4));
-        mTasks.add(new Task("Task 5", 5));
+        mTasks.add(new Task("Task 1", 1, 0));
+        mTasks.add(new Task("Task 2", 2, 0));
+        mTasks.add(new Task("Task 3", 3, 0));
+        mTasks.add(new Task("Task 4", 4, 0));
+        mTasks.add(new Task("Task 5", 5, 0));
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_delete) {
@@ -80,39 +77,68 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void viewAddDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Add New Task");
-        dialog.setCancelable(true);
-
-        // Adding and styling the layout of the dialog
+    public LinearLayout createLayout() {
+        // Create and style the layout for the dialogs
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(60, 30, 60, 0);
 
-        // Adding and Styling the task input field
+        // Create and style the task input field
         EditText taskInput = new EditText(this);
         taskInput.setInputType(InputType.TYPE_CLASS_TEXT);
         taskInput.setHint("Enter new task");
 
-        // Adding and Styling the priority input field
+        // Create and style the priority input field
         EditText priorityInput = new EditText(this);
         priorityInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         priorityInput.setHint("Enter task priority");
 
-        // Adding the views to the LinearLayout
+        // Adding the views to the layout
         layout.addView(taskInput, layoutParams);
         layout.addView(priorityInput, layoutParams);
-        dialog.setView(layout);
 
+        return layout;
+    }
+
+    public void viewAddDialog() {
+        // Create the dialog
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Add New Task");
+        dialog.setCancelable(true);
+        dialog.setView(createLayout());
 
         // Set up the buttons
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addTask();
+
+            }
+        });
+
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.create().show();
+    }
+
+    public void viewUpdateDialog() {
+        // Create the dialog
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Update Task");
+        dialog.setCancelable(true);
+        dialog.setView(createLayout());
+
+        // Set up the buttons
+        dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
             }
         });
 
@@ -127,22 +153,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void viewDeleteDialog() {
+        // Create the dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Delete Task");
         dialog.setCancelable(true);
 
-        // Adding and styling the layout of the dialog
+        // Create and style the layout of the dialog
         LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(60, 30, 60, 0);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-        // Adding and Styling the to-be-deleted task input field
+        // Create and style the to be deleted task number input field
         final EditText editText = new EditText(this);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setHint("Enter task number");
 
+        //  Adding the views to the layout
         layout.addView(editText, layoutParams);
         dialog.setView(layout);
 
@@ -169,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void confirmDeletion() {
+        // Create the dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("Delete this task ?");
         dialog.setCancelable(true);
@@ -177,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteTask();
+
             }
         });
 
@@ -191,11 +220,4 @@ public class MainActivity extends AppCompatActivity {
         dialog.create().show();
     }
 
-    public void addTask(){
-
-    }
-
-    public void deleteTask(){
-
-    }
 }
