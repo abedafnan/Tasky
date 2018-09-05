@@ -62,7 +62,6 @@ public class DBOperations {
         Cursor cursor = database.query(TaskEntry.TABLE_NAME, null,
                 null, null, null, null, null);
 
-        cursor.moveToFirst();
         while (cursor.moveToNext()) {
             String taskName = cursor.getString(cursor.getColumnIndex(TaskEntry.NAME_COLUMN));
             int taskPriority = cursor.getInt(cursor.getColumnIndex(TaskEntry.PRIORITY_COLUMN));

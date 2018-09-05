@@ -23,10 +23,15 @@ import com.example.android.tasky.database.DBOperations;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Task> mTasks;
+
+    private DBOperations mDBOperations;
     private RecyclerAdapter mAdapter;
-    private RecyclerView mRecyclerView;
-    private DBOperations dbOperations;
+    private ArrayList<Task> mTasks;
+    private EditText mTaskInput;
+    private EditText mPriorityInput;
+    private EditText mTaskUpdate;
+    private EditText mPriorityUpdate;
+    private EditText mDeleteEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +48,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mRecyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
-        dbOperations = new DBOperations(this);
-        mTasks = dbOperations.readAllTasks();
+        mDBOperations = new DBOperations(this);
+        mTasks = mDBOperations.readAllTasks();
+
 //        mTasks = new ArrayList<>();
 //        mTasks.add(new Task("Task 1", 1, 0));
 //        mTasks.add(new Task("Task 2", 2, 0));
@@ -55,15 +61,15 @@ public class MainActivity extends AppCompatActivity {
 //        mTasks.add(new Task("Task 5", 5, 0));
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new RecyclerAdapter(mTasks, new RecyclerAdapter.onItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                viewUpdateDialog();
+                viewUpdateDialog(position);
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -85,43 +91,34 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public LinearLayout createLayout() {
-        // Create and style the layout for the dialogs
+    public void viewAddDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Add New Task");
+        dialog.setCancelable(true);
+
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(60, 30, 60, 0);
 
-        // Create and style the task input field
-        EditText taskInput = new EditText(this);
-        taskInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        taskInput.setHint("Enter new task");
+        mTaskInput = new EditText(this);
+        mTaskInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        mTaskInput.setHint("Enter new task");
 
-        // Create and style the priority input field
-        EditText priorityInput = new EditText(this);
-        priorityInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        priorityInput.setHint("Enter task priority");
+        mPriorityInput = new EditText(this);
+        mPriorityInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mPriorityInput.setHint("Enter task priority");
 
-        // Adding the views to the layout
-        layout.addView(taskInput, layoutParams);
-        layout.addView(priorityInput, layoutParams);
+        layout.addView(mTaskInput, layoutParams);
+        layout.addView(mPriorityInput, layoutParams);
 
-        return layout;
-    }
+        dialog.setView(layout);
 
-    public void viewAddDialog() {
-        // Create the dialog
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Add New Task");
-        dialog.setCancelable(true);
-        dialog.setView(createLayout());
-
-        // Set up the buttons
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                addTask();
             }
         });
 
@@ -135,18 +132,49 @@ public class MainActivity extends AppCompatActivity {
         dialog.create().show();
     }
 
-    public void viewUpdateDialog() {
-        // Create the dialog
+    public void addTask() {
+        String taskName = mTaskInput.getText().toString();
+        int taskPriority = Integer.parseInt(mPriorityInput.getText().toString());
+
+        Task newTask = new Task(taskName, taskPriority, 0); // time to be edited
+        long rowId = mDBOperations.addTask(newTask);
+
+        if (rowId > 0) {
+//            mAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error while adding the task", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void viewUpdateDialog(final int position) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle("Update Task");
         dialog.setCancelable(true);
-        dialog.setView(createLayout());
 
-        // Set up the buttons
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(60, 30, 60, 0);
+
+        mTaskUpdate = new EditText(this);
+        mTaskUpdate.setInputType(InputType.TYPE_CLASS_TEXT);
+        mTaskUpdate.setHint("Enter new task");
+
+        mPriorityUpdate = new EditText(this);
+        mPriorityUpdate.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mPriorityUpdate.setHint("Enter task priority");
+
+        layout.addView(mTaskUpdate, layoutParams);
+        layout.addView(mPriorityUpdate, layoutParams);
+
+        dialog.setView(layout);
+
         dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                updateTask(position);
             }
         });
 
@@ -160,34 +188,46 @@ public class MainActivity extends AppCompatActivity {
         dialog.create().show();
     }
 
+    public void updateTask(int position) {
+        String newTask = mTaskUpdate.getText().toString();
+        int newPriority = Integer.parseInt(mPriorityUpdate.getText().toString());
+
+        Task updatedTask = new Task(newTask, newPriority, 0); // time to be updated
+        Task oldTask = mTasks.get(position);
+        int updateId = mDBOperations.updateTask(oldTask, updatedTask);
+
+        if (updateId > 0) {
+//            mAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error while updating the task", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void viewDeleteDialog() {
-        // Create the dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Delete Task");
         dialog.setCancelable(true);
 
-        // Create and style the layout of the dialog
         LinearLayout layout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(60, 30, 60, 0);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        // Create and style the to be deleted task number input field
-        final EditText editText = new EditText(this);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        editText.setHint("Enter task number");
+        mDeleteEditText = new EditText(this);
+        mDeleteEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mDeleteEditText.setHint("Enter task priority number");
 
-        //  Adding the views to the layout
-        layout.addView(editText, layoutParams);
+        layout.addView(mDeleteEditText, layoutParams);
         dialog.setView(layout);
 
-        // Set up the buttons
         dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (editText.getText().toString().equals("")) {
-                    Toast.makeText(MainActivity.this, "task number not entered!", Toast.LENGTH_SHORT).show();
+                if (mDeleteEditText.getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this,
+                            "task number not entered!", Toast.LENGTH_SHORT).show();
                 } else {
                     confirmDeletion();
                 }
@@ -205,16 +245,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void confirmDeletion() {
-        // Create the dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("Delete this task ?");
         dialog.setCancelable(true);
 
-        // Set up the buttons
         dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                deleteTask();
             }
         });
 
@@ -228,4 +266,15 @@ public class MainActivity extends AppCompatActivity {
         dialog.create().show();
     }
 
+    public void deleteTask() {
+        int taskNumber = Integer.parseInt(mDeleteEditText.getText().toString());
+        int deletionId = mDBOperations.deleteTask(taskNumber);
+
+        if (deletionId > 0) {
+//            mAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Task was deleted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error while deleting task", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
