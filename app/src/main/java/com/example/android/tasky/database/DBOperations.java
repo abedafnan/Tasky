@@ -1,11 +1,12 @@
-package dataPackage;
+package com.example.android.tasky.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import dataPackage.DBContract.TaskEntry;
 import com.example.android.tasky.Task;
+import java.util.ArrayList;
+import com.example.android.tasky.database.DBContract.TaskEntry;
 
 /**
  * Created by Afnan A. A. Abed on 9/2/2018.
@@ -51,5 +52,27 @@ public class DBOperations {
         String[] whereArgs = new String[]{String.valueOf(oldTask.getTaskPriority())};
 
         return database.update(TaskEntry.TABLE_NAME, values, whereClause, whereArgs);
+    }
+
+    public ArrayList<Task> readAllTasks() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        ArrayList<Task> tasksArrayList = new ArrayList<>();
+
+        Cursor cursor = database.query(TaskEntry.TABLE_NAME, null,
+                null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            String taskName = cursor.getString(cursor.getColumnIndex(TaskEntry.NAME_COLUMN));
+            int taskPriority = cursor.getInt(cursor.getColumnIndex(TaskEntry.PRIORITY_COLUMN));
+            int taskTime = cursor.getInt(cursor.getColumnIndex(TaskEntry.TIME_COLUMN));
+
+            Task task = new Task(taskName, taskPriority, taskTime);
+            tasksArrayList.add(task);
+        }
+
+        cursor.close();
+        return tasksArrayList;
     }
 }

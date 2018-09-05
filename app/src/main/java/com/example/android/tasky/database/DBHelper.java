@@ -1,9 +1,9 @@
-package dataPackage;
+package com.example.android.tasky.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import dataPackage.DBContract.TaskEntry;
+import com.example.android.tasky.database.DBContract.TaskEntry;
 
 /**
  * Created by Afnan A. A. Abed on 9/2/2018.

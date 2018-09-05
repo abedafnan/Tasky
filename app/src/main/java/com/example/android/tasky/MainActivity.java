@@ -18,12 +18,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.android.tasky.database.DBOperations;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<Task> mTasks;
-    RecyclerAdapter mAdapter;
-    RecyclerView mRecyclerView;
+    private ArrayList<Task> mTasks;
+    private RecyclerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private DBOperations dbOperations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.recycler_view);
 
-        mTasks = new ArrayList<>();
-        mTasks.add(new Task("Task 1", 1, 0));
-        mTasks.add(new Task("Task 2", 2, 0));
-        mTasks.add(new Task("Task 3", 3, 0));
-        mTasks.add(new Task("Task 4", 4, 0));
-        mTasks.add(new Task("Task 5", 5, 0));
+        dbOperations = new DBOperations(this);
+        mTasks = dbOperations.readAllTasks();
+//        mTasks = new ArrayList<>();
+//        mTasks.add(new Task("Task 1", 1, 0));
+//        mTasks.add(new Task("Task 2", 2, 0));
+//        mTasks.add(new Task("Task 3", 3, 0));
+//        mTasks.add(new Task("Task 4", 4, 0));
+//        mTasks.add(new Task("Task 5", 5, 0));
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);

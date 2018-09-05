@@ -1,4 +1,4 @@
-package dataPackage;
+package com.example.android.tasky.database;
 
 import android.provider.BaseColumns;
 

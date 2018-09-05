@@ -8,10 +8,9 @@
     tools:context="com.example.android.tasky.MainActivity"
     tools:showIn="@layout/activity_main"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:paddingLeft="@dimen/vertical_margin"
     android:paddingRight="@dimen/vertical_margin"
-    android:paddingTop="@dimen/horizontal_margin">
+    android:paddingTop="@dimen/horizontal_margin" >
 
     <TextView
         android:id="@+id/title"
@@ -19,12 +18,14 @@
         android:layout_height="wrap_content"
         android:text="@string/title_activity"
         android:textSize="24sp"
-        android:layout_marginBottom="@dimen/horizontal_margin" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="@dimen/horizontal_margin"
+        android:fontFamily="sans-serif-condensed"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </LinearLayout>
