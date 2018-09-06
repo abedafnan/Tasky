@@ -59,8 +59,8 @@ public class DBOperations {
 
         ArrayList<Task> tasksArrayList = new ArrayList<>();
 
-        Cursor cursor = database.query(TaskEntry.TABLE_NAME, null,
-                null, null, null, null, null);
+        Cursor cursor = database.query(TaskEntry.TABLE_NAME, null, null,
+                null, null, null, TaskEntry.PRIORITY_COLUMN + " ASC");
 
         while (cursor.moveToNext()) {
             String taskName = cursor.getString(cursor.getColumnIndex(TaskEntry.NAME_COLUMN));
