@@ -8,35 +8,32 @@
     android:layout_marginTop="2dp"
     app:cardElevation="4dp" >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/task_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/horizontal_margin"
-            android:layout_marginEnd="@dimen/vertical_margin"
-            android:layout_marginLeft="@dimen/card_text_margin"
-            android:layout_marginRight="@dimen/vertical_margin"
-            android:layout_marginStart="@dimen/card_text_margin"
+            android:layout_marginLeft="@dimen/vertical_margin"
             android:layout_marginTop="@dimen/horizontal_margin"
-            android:text="placeholder text"
-            android:textColor="#000"
+            android:layout_weight="10"
+            android:text="Placeholder text"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/priority_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/card_text_margin"
-            android:layout_marginEnd="@dimen/card_text_margin"
+            android:layout_marginBottom="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/vertical_margin"
+            android:layout_marginTop="@dimen/horizontal_margin"
+            android:layout_weight="1"
+            android:gravity="right"
             android:text="0"
-            android:textColor="#000"
             android:textSize="16sp" />
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>
