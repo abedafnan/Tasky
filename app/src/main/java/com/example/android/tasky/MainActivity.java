@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -48,18 +49,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-
         mDBOperations = new DBOperations(this);
         mTasks = mDBOperations.readAllTasks();
 
-//        mTasks = new ArrayList<>();
-//        mTasks.add(new Task("Task 1", 1, 0));
-//        mTasks.add(new Task("Task 2", 2, 0));
-//        mTasks.add(new Task("Task 3", 3, 0));
-//        mTasks.add(new Task("Task 4", 4, 0));
-//        mTasks.add(new Task("Task 5", 5, 0));
-
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
@@ -92,10 +85,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void viewAddDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Add New Task");
-        dialog.setCancelable(true);
-
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -113,28 +102,45 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(mTaskInput, layoutParams);
         layout.addView(mPriorityInput, layoutParams);
 
-        dialog.setView(layout);
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Update Task")
+                .setCancelable(true)
+                .setView(layout)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Add", null)
+                .create();
 
-        dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                addTask();
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (checkInputValidation(mTaskInput, mPriorityInput)) {
+                            addTask();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
             }
         });
 
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        dialog.create().show();
+        dialog.show();
     }
 
     public void addTask() {
-        String taskName = mTaskInput.getText().toString();
-        int taskPriority = Integer.parseInt(mPriorityInput.getText().toString());
+        String taskName = mTaskInput.getText().toString().trim();
+        int taskPriority = Integer.parseInt(mPriorityInput.getText().toString().trim());
 
         Task newTask = new Task(taskName, taskPriority, 0); // time to be edited
         long rowId = mDBOperations.addTask(newTask);
@@ -147,11 +153,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void viewUpdateDialog(final int position) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Update Task");
-        dialog.setCancelable(true);
+    private boolean checkInputValidation(EditText firstField, EditText secondField) {
+        if (!firstField.getText().toString().trim().equals("")) {
 
+            if (!(secondField.getText().toString().trim().equals("") ||
+                    Integer.parseInt(secondField.getText().toString().trim()) <= 0)) {
+                return true;
+
+            } else {
+                Toast.makeText(MainActivity.this,
+                        "invalid task priority number!", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(MainActivity.this,
+                    "task not entered!", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    public void viewUpdateDialog(final int position) {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -161,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         mTaskUpdate = new EditText(this);
         mTaskUpdate.setInputType(InputType.TYPE_CLASS_TEXT);
         mTaskUpdate.setHint("Enter new task");
+        mTaskUpdate.setText(mTasks.get(position).getTaskName());
 
         mPriorityUpdate = new EditText(this);
         mPriorityUpdate.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -169,28 +191,45 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(mTaskUpdate, layoutParams);
         layout.addView(mPriorityUpdate, layoutParams);
 
-        dialog.setView(layout);
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Update Task")
+                .setCancelable(true)
+                .setView(layout)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Update", null)
+                .create();
 
-        dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                updateTask(position);
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (checkInputValidation(mTaskUpdate, mPriorityUpdate)) {
+                            updateTask(position);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
             }
         });
 
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        dialog.create().show();
+        dialog.show();
     }
 
     public void updateTask(int position) {
-        String newTask = mTaskUpdate.getText().toString();
-        int newPriority = Integer.parseInt(mPriorityUpdate.getText().toString());
+        String newTask = mTaskUpdate.getText().toString().trim();
+        int newPriority = Integer.parseInt(mPriorityUpdate.getText().toString().trim());
 
         Task updatedTask = new Task(newTask, newPriority, 0); // time to be updated
         Task oldTask = mTasks.get(position);
@@ -205,10 +244,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void viewDeleteDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Delete Task");
-        dialog.setCancelable(true);
-
         LinearLayout layout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -220,28 +255,49 @@ public class MainActivity extends AppCompatActivity {
         mDeleteEditText.setHint("Enter task priority number");
 
         layout.addView(mDeleteEditText, layoutParams);
-        dialog.setView(layout);
 
-        dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Delete Task")
+                .setCancelable(true)
+                .setView(layout)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete", null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (mDeleteEditText.getText().toString().equals("")) {
-                    Toast.makeText(MainActivity.this,
-                            "task number not entered!", Toast.LENGTH_SHORT).show();
-                } else {
-                    confirmDeletion();
-                }
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mDeleteEditText.getText().toString().trim().equals("")) {
+                            Toast.makeText(MainActivity.this,
+                                    "task number not entered!", Toast.LENGTH_SHORT).show();
+
+                        } else if (Integer.parseInt(mDeleteEditText.getText().toString().trim()) <= 0) {
+                            Toast.makeText(MainActivity.this,
+                                    "invalid task number!", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            confirmDeletion();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
             }
         });
 
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        dialog.create().show();
+        dialog.show();
     }
 
     public void confirmDeletion() {
@@ -267,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void deleteTask() {
-        int taskNumber = Integer.parseInt(mDeleteEditText.getText().toString());
+        int taskNumber = Integer.parseInt(mDeleteEditText.getText().toString().trim());
         int deletionId = mDBOperations.deleteTask(taskNumber);
 
         if (deletionId > 0) {
