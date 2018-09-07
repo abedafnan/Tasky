@@ -17,11 +17,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.tasky.database.DBOperations;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +65,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(mAdapter);
+
+//        LinearLayout itemLayout = findViewById(R.id.item_layout);
+//        TextView task = findViewById(R.id.task_input);
+//        TextView priority = findViewById(R.id.priority_input);
+//
+//        for (int i = 0; i < mTasks.size(); i++) {
+//            if (mTasks.get(i).getTaskTime() < mTasks.get(i).getTaskTime() + 1000*60*10) {
+//                itemLayout.setBackgroundColor(getResources().getColor(R.color.taskColor2));
+//
+//            } else if (mTasks.get(i).getTaskTime() < mTasks.get(i).getTaskTime() + 1000*60*60*3) {
+//                itemLayout.setBackgroundColor(getResources().getColor(R.color.taskColor1));
+//                task.setTextColor(getResources().getColor(R.color.textColor2));
+//                priority.setTextColor(getResources().getColor(R.color.textColor2));
+//            }
+//        }
     }
 
     @Override
@@ -141,13 +158,15 @@ public class MainActivity extends AppCompatActivity {
     public void addTask() {
         String taskName = mTaskInput.getText().toString().trim();
         int taskPriority = Integer.parseInt(mPriorityInput.getText().toString().trim());
+        long taskTime =  new Date(System.currentTimeMillis()).getTime();
 
-        Task newTask = new Task(taskName, taskPriority, 0); // time to be edited
+        Task newTask = new Task(taskName, taskPriority, taskTime);
         long rowId = mDBOperations.addTask(newTask);
 
         if (rowId > 0) {
 //            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "" + taskTime, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "Error while adding the task", Toast.LENGTH_SHORT).show();
         }
@@ -225,19 +244,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
+
+        Toast.makeText(this, new Date(System.currentTimeMillis()).getTime() + " / "
+                + mTasks.get(position).getTaskTime(), Toast.LENGTH_LONG).show();
     }
 
     public void updateTask(int position) {
         String newTask = mTaskUpdate.getText().toString().trim();
         int newPriority = Integer.parseInt(mPriorityUpdate.getText().toString().trim());
+        long taskTime = new Date(System.currentTimeMillis()).getTime();
 
-        Task updatedTask = new Task(newTask, newPriority, 0); // time to be updated
+        Task updatedTask = new Task(newTask, newPriority, taskTime);
         Task oldTask = mTasks.get(position);
         int updateId = mDBOperations.updateTask(oldTask, updatedTask);
 
         if (updateId > 0) {
 //            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "" + taskTime, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error while updating the task", Toast.LENGTH_SHORT).show();
         }

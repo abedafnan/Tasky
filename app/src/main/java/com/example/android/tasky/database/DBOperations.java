@@ -65,7 +65,7 @@ public class DBOperations {
         while (cursor.moveToNext()) {
             String taskName = cursor.getString(cursor.getColumnIndex(TaskEntry.NAME_COLUMN));
             int taskPriority = cursor.getInt(cursor.getColumnIndex(TaskEntry.PRIORITY_COLUMN));
-            int taskTime = cursor.getInt(cursor.getColumnIndex(TaskEntry.TIME_COLUMN));
+            long taskTime = cursor.getLong(cursor.getColumnIndex(TaskEntry.TIME_COLUMN));
 
             Task task = new Task(taskName, taskPriority, taskTime);
             tasksArrayList.add(task);

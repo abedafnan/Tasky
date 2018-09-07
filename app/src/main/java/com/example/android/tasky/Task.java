@@ -2,6 +2,7 @@ package com.example.android.tasky;
 
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Afnan A. A. Abed on 9/4/2018.
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 public class Task {
     private String taskName;
     private int taskPriority;
-    private int taskTime;
+    private long taskTime;
 
-    public Task(String taskName, int taskPriority, int taskTime) {
+    public Task(String taskName, int taskPriority, long taskTime) {
         this.taskName = taskName;
         this.taskPriority = taskPriority;
         this.taskTime = taskTime;
@@ -34,11 +35,11 @@ public class Task {
         this.taskPriority = taskPriority;
     }
 
-    public int getTaskTime() {
+    public long getTaskTime() {
         return taskTime;
     }
 
-    public void setTaskTime(int taskTime) {
+    public void setTaskTime(long taskTime) {
         this.taskTime = taskTime;
     }
 }
