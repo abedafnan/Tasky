@@ -42,4 +42,11 @@ public class Task {
     public void setTaskTime(long taskTime) {
         this.taskTime = taskTime;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (taskName.equals(((Task) obj).getTaskName()) && taskPriority == ((Task) obj).getTaskPriority())
+                || taskPriority == ((Task) obj).getTaskPriority();
+    }
 }
+

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.android.tasky.database.DBOperations;
 
+import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mTaskUpdate;
     private EditText mPriorityUpdate;
     private EditText mDeleteEditText;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         mDBOperations = new DBOperations(this);
         mTasks = mDBOperations.readAllTasks();
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
@@ -121,6 +123,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (checkInputValidation(mTaskInput, mPriorityInput)) {
+
+//                            for (Task t : mTasks){
+//                                if (t.getTaskName().equals(mTaskInput.getText().toString()) &&
+//                                        t.getTaskPriority() == Integer.parseInt(mPriorityInput.getText().toString())){
+//                                    //Show Toast
+//                                    //dismiss Dialog
+//                                    return;
+//                                }
+//                            }
+
+                            if (mTasks.contains(new Task(mTaskInput.getText().toString()
+                                    , Integer.parseInt(mPriorityInput.getText().toString()), 0))) {
+
+                                Toast.makeText(MainActivity.this,
+                                        "either task name or task priority number already exist", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             addTask();
                             dialog.dismiss();
                         }
@@ -149,11 +169,13 @@ public class MainActivity extends AppCompatActivity {
         long rowId = mDBOperations.addTask(newTask);
 
         if (rowId > 0) {
-//            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error while adding the task", Toast.LENGTH_SHORT).show();
         }
+
+        mTasks = mDBOperations.readAllTasks();
+        mAdapter.addTasks(mTasks);
     }
 
     private boolean checkInputValidation(EditText firstField, EditText secondField) {
@@ -190,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
         mPriorityUpdate = new EditText(this);
         mPriorityUpdate.setInputType(InputType.TYPE_CLASS_NUMBER);
         mPriorityUpdate.setHint("Enter task priority");
+        mPriorityUpdate.setText("" + mTasks.get(position).getTaskPriority());
 
         layout.addView(mTaskUpdate, layoutParams);
         layout.addView(mPriorityUpdate, layoutParams);
@@ -211,6 +234,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (checkInputValidation(mTaskUpdate, mPriorityUpdate)) {
+
+                            if (mTasks.contains(new Task(mTaskUpdate.getText().toString()
+                                    ,Integer.parseInt(mPriorityUpdate.getText().toString()),0))){
+
+                                Toast.makeText(MainActivity.this, "You already have a task with priority "
+                                                + mPriorityUpdate.getText().toString(), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             updateTask(position);
                             dialog.dismiss();
                         }
@@ -242,8 +274,10 @@ public class MainActivity extends AppCompatActivity {
         Task oldTask = mTasks.get(position);
         int updateId = mDBOperations.updateTask(oldTask, updatedTask);
 
+        mTasks = mDBOperations.readAllTasks();
+        mAdapter.addTasks(mTasks);
+
         if (updateId > 0) {
-//            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error while updating the task", Toast.LENGTH_SHORT).show();
@@ -333,8 +367,10 @@ public class MainActivity extends AppCompatActivity {
         int taskNumber = Integer.parseInt(mDeleteEditText.getText().toString().trim());
         int deletionId = mDBOperations.deleteTask(taskNumber);
 
+        mTasks = mDBOperations.readAllTasks();
+        mAdapter.addTasks(mTasks);
+
         if (deletionId > 0) {
-//            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task was deleted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error while deleting task", Toast.LENGTH_SHORT).show();

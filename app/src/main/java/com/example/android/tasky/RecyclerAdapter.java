@@ -64,12 +64,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         long currentTime = new Date(System.currentTimeMillis()).getTime();
 
-        if (mTasks.get(position).getTaskTime() + 1000*60*60*24 < currentTime) {
+        if (mTasks.get(position).getTaskTime() + 1000*60*60*24*2 < currentTime) {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#616161"));
             holder.taskName.setTextColor(Color.parseColor("#ffffff"));
             holder.taskPriority.setTextColor(Color.parseColor("#ffffff"));
 
-        } else if (mTasks.get(position).getTaskTime() + 1000*60*2 < currentTime) {
+        } else if (mTasks.get(position).getTaskTime() + 1000*60*60*24 < currentTime) {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#9e9e9e"));
         }
     }
@@ -81,5 +81,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public interface onItemClickListener {
         void onItemClick(View view, int position);
+    }
+
+    public void addTasks(ArrayList<Task> tasks){
+        mTasks = tasks;
+        notifyDataSetChanged();
     }
 }
