@@ -62,16 +62,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.taskName.setText(mTasks.get(position).getTaskName());
         holder.taskPriority.setText("" + mTasks.get(position).getTaskPriority());
 
-//        long currentTime = new Date(System.currentTimeMillis()).getTime();
-//
-//        if (mTasks.get(position).getTaskTime() + 1000*60*60*24 < currentTime) {
-//            holder.itemLayout.setBackgroundColor(Color.parseColor("#616161"));
-//            holder.taskName.setTextColor(Color.parseColor("#ffffff"));
-//            holder.taskPriority.setTextColor(Color.parseColor("#ffffff"));
-//
-//        } else if (mTasks.get(position).getTaskTime() + 1000*60*20 < currentTime) {
-//            holder.itemLayout.setBackgroundColor(Color.parseColor("#9e9e9e"));
-//        }
+        long currentTime = new Date(System.currentTimeMillis()).getTime();
+
+        if (mTasks.get(position).getTaskTime() + 1000*60*60*24 < currentTime) {
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#616161"));
+            holder.taskName.setTextColor(Color.parseColor("#ffffff"));
+            holder.taskPriority.setTextColor(Color.parseColor("#ffffff"));
+
+        } else if (mTasks.get(position).getTaskTime() + 1000*60*2 < currentTime) {
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#9e9e9e"));
+        }
     }
 
     @Override

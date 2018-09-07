@@ -65,21 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(mAdapter);
-
-//        LinearLayout itemLayout = findViewById(R.id.item_layout);
-//        TextView task = findViewById(R.id.task_input);
-//        TextView priority = findViewById(R.id.priority_input);
-//
-//        for (int i = 0; i < mTasks.size(); i++) {
-//            if (mTasks.get(i).getTaskTime() < mTasks.get(i).getTaskTime() + 1000*60*10) {
-//                itemLayout.setBackgroundColor(getResources().getColor(R.color.taskColor2));
-//
-//            } else if (mTasks.get(i).getTaskTime() < mTasks.get(i).getTaskTime() + 1000*60*60*3) {
-//                itemLayout.setBackgroundColor(getResources().getColor(R.color.taskColor1));
-//                task.setTextColor(getResources().getColor(R.color.textColor2));
-//                priority.setTextColor(getResources().getColor(R.color.textColor2));
-//            }
-//        }
     }
 
     @Override
@@ -166,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
         if (rowId > 0) {
 //            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "" + taskTime, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "Error while adding the task", Toast.LENGTH_SHORT).show();
         }
@@ -261,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
         if (updateId > 0) {
 //            mAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "" + taskTime, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error while updating the task", Toast.LENGTH_SHORT).show();
         }
