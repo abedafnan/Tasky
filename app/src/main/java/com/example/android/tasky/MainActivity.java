@@ -3,26 +3,22 @@ package com.example.android.tasky;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.tasky.database.DBOperations;
 
-import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(mPriorityInput, layoutParams);
 
         final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Update Task")
+                .setTitle("Add Task")
                 .setCancelable(true)
                 .setView(layout)
                 .setNegativeButton("Cancel", null)
@@ -119,19 +115,11 @@ public class MainActivity extends AppCompatActivity {
             public void onShow(DialogInterface dialogInterface) {
 
                 Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setBackground(getResources().getDrawable(R.drawable.button_selector3));
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (checkInputValidation(mTaskInput, mPriorityInput)) {
-
-//                            for (Task t : mTasks){
-//                                if (t.getTaskName().equals(mTaskInput.getText().toString()) &&
-//                                        t.getTaskPriority() == Integer.parseInt(mPriorityInput.getText().toString())){
-//                                    //Show Toast
-//                                    //dismiss Dialog
-//                                    return;
-//                                }
-//                            }
 
                             if (mTasks.contains(new Task(mTaskInput.getText().toString()
                                     , Integer.parseInt(mPriorityInput.getText().toString()), 0))) {
@@ -148,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setBackground(getResources().getDrawable(R.drawable.button_selector2));
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -212,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         mPriorityUpdate = new EditText(this);
         mPriorityUpdate.setInputType(InputType.TYPE_CLASS_NUMBER);
         mPriorityUpdate.setHint("Enter task priority");
-        mPriorityUpdate.setText("" + mTasks.get(position).getTaskPriority());
+//        mPriorityUpdate.setText("" + mTasks.get(position).getTaskPriority());
 
         layout.addView(mTaskUpdate, layoutParams);
         layout.addView(mPriorityUpdate, layoutParams);
@@ -230,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
             public void onShow(DialogInterface dialogInterface) {
 
                 Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setBackground(getResources().getDrawable(R.drawable.button_selector3));
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -250,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setBackground(getResources().getDrawable(R.drawable.button_selector2));
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -260,9 +251,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
-
-        Toast.makeText(this, new Date(System.currentTimeMillis()).getTime() + " / "
-                + mTasks.get(position).getTaskTime(), Toast.LENGTH_LONG).show();
     }
 
     public void updateTask(int position) {
@@ -310,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
             public void onShow(DialogInterface dialogInterface) {
 
                 Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setBackground(getResources().getDrawable(R.drawable.button_selector1));
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -329,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                negativeButton.setBackground(getResources().getDrawable(R.drawable.button_selector2));
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -373,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         if (deletionId > 0) {
             Toast.makeText(this, "Task was deleted", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Error while deleting task", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This task doesn't exist!", Toast.LENGTH_SHORT).show();
         }
     }
 }
