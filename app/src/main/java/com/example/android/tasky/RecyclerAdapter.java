@@ -64,6 +64,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         long currentTime = new Date(System.currentTimeMillis()).getTime();
 
+        // Change tasks' colors according to the time passed after adding them
         if (mTasks.get(position).getTaskTime() + 1000*60*60*24*2 < currentTime) {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#616161"));
             holder.taskName.setTextColor(Color.parseColor("#ffffff"));
@@ -83,6 +84,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         void onItemClick(View view, int position);
     }
 
+    // Will be called after each change to update the RecyclerView
     public void addTasks(ArrayList<Task> tasks){
         mTasks = tasks;
         notifyDataSetChanged();

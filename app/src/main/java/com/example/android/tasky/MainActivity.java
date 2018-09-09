@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Click listener of the floating button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,19 +50,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Read data from the database
         mDBOperations = new DBOperations(this);
         mTasks = mDBOperations.readAllTasks();
 
+        // Set up the RecyclerView
         recyclerView = findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        // RecyclerView items' click listener
         mAdapter = new RecyclerAdapter(mTasks, new RecyclerAdapter.onItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 viewUpdateDialog(position);
             }
         });
+
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -84,13 +89,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Create and style the add dialog
     public void viewAddDialog() {
+        // Create and style the layout of the dialog
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(60, 30, 60, 0);
 
+        // Create and style the text fields
         mTaskInput = new EditText(this);
         mTaskInput.setInputType(InputType.TYPE_CLASS_TEXT);
         mTaskInput.setHint("Enter new task");
@@ -99,9 +107,11 @@ public class MainActivity extends AppCompatActivity {
         mPriorityInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         mPriorityInput.setHint("Enter task priority");
 
+        // Add both text fields to the dialog layout
         layout.addView(mTaskInput, layoutParams);
         layout.addView(mPriorityInput, layoutParams);
 
+        // Create the add dialog
         final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Add Task")
                 .setCancelable(true)
@@ -114,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onShow(DialogInterface dialogInterface) {
 
+                // Create the positive button of the dialog and attach button click listener
                 Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 positiveButton.setBackground(getResources().getDrawable(R.drawable.button_selector3));
                 positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                // Create the negative button of the dialog and attach button click listener
                 Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 negativeButton.setBackground(getResources().getDrawable(R.drawable.button_selector2));
                 negativeButton.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Get data form text fields and add it to the database
     public void addTask() {
         String taskName = mTaskInput.getText().toString().trim();
         int taskPriority = Integer.parseInt(mPriorityInput.getText().toString().trim());
@@ -167,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.addTasks(mTasks);
     }
 
+    // Check the validation of text fields' input
     private boolean checkInputValidation(EditText firstField, EditText secondField) {
         if (!firstField.getText().toString().trim().equals("")) {
 
@@ -186,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    // Create and style the update dialog
     public void viewUpdateDialog(final int position) {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -253,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Get data form the text fields and update database
     public void updateTask(int position) {
         String newTask = mTaskUpdate.getText().toString().trim();
         int newPriority = Integer.parseInt(mPriorityUpdate.getText().toString().trim());
@@ -272,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Create and style the delete dialog
     public void viewDeleteDialog() {
         LinearLayout layout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -331,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Create the deletion confirmation dialog
     public void confirmDeletion() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("Delete this task ?");
@@ -353,6 +371,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.create().show();
     }
 
+    // Delete task from the database
     public void deleteTask() {
         int taskNumber = Integer.parseInt(mDeleteEditText.getText().toString().trim());
         int deletionId = mDBOperations.deleteTask(taskNumber);
